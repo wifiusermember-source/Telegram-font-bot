@@ -1,1 +1,84 @@
-index.html
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Telegram Font Board</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#090d18;color:#fff;font-family:Arial,sans-serif}
+header{text-align:center;padding:30px 15px;background:#121b30;border-bottom:1px solid #273653}
+header h1{color:#65a5ff;font-size:27px;margin:0}
+header p{color:#aab5ca}
+.container{max-width:650px;margin:auto;padding:20px}
+input{width:100%;padding:16px;border-radius:12px;border:1px solid #344363;background:#151e33;color:white;font-size:17px;outline:none}
+h3{color:#91baff}
+.card{background:#151e33;border:1px solid #293956;padding:16px;margin:13px 0;border-radius:13px}
+.name{color:#75aaff;font-weight:bold;margin-bottom:12px}
+.result{font-size:20px;overflow-wrap:anywhere;margin-bottom:15px;min-height:25px}
+button{background:#3478f6;color:white;border:0;padding:11px 20px;border-radius:8px;font-weight:bold}
+footer{text-align:center;padding:25px;color:#8290aa}
+</style>
+</head>
+<body>
+<header>
+<h1>✦ TELEGRAM FONT BOARD ✦</h1>
+<p>Make Your Name Stylish</p>
+</header>
+<div class="container">
+<h3>✍️ Enter Your Text</h3>
+<input id="userText" placeholder="Write your name here..." oninput="generate()">
+<h3>✨ Stylish Fonts</h3>
+<div id="results"></div>
+</div>
+<footer>Made with ♥ | Telegram Font Board</footer>
+<script>
+const styles=[
+["Bold","𝐀𝐁𝐂𝐃𝐄𝐅𝐆𝐇𝐈𝐉𝐊𝐋𝐌𝐍𝐎𝐏𝐐𝐑𝐒𝐓𝐔𝐕𝐖𝐗𝐘𝐙","𝐚𝐛𝐜𝐝𝐞𝐟𝐠𝐡𝐢𝐣𝐤𝐥𝐦𝐧𝐨𝐩𝐪𝐫𝐬𝐭𝐮𝐯𝐰𝐱𝐲𝐳"],
+["Italic","𝐴𝐵𝐶𝐷𝐸𝐹𝐺𝐻𝐼𝐽𝐾𝐿𝑀𝑁𝑂𝑃𝑄𝑅𝑆𝑇𝑈𝑉𝑊𝑋𝑌𝑍","𝑎𝑏𝑐𝑑𝑒𝑓𝑔ℎ𝑖𝑗𝑘𝑙𝑚𝑛𝑜𝑝𝑞𝑟𝑠𝑡𝑢𝑣𝑤𝑥𝑦𝑧"],
+["Bold Italic","𝑨𝑩𝑪𝑫𝑬𝑭𝑮𝑯𝑰𝑱𝑲𝑳𝑴𝑵𝑶𝑷𝑸𝑹𝑺𝑻𝑼𝑽𝑾𝑿𝒀𝒁","𝒂𝒃𝒄𝒅𝒆𝒇𝒈𝒉𝒊𝒋𝒌𝒍𝒎𝒏𝒐𝒑𝒒𝒓𝒔𝒕𝒖𝒗𝒘𝒙𝒚𝒛"],
+["Double","𝔸𝔹ℂ𝔻𝔼𝔽𝔾ℍ𝕀𝕁𝕂𝕃𝕄ℕ𝕆ℙℚℝ𝕊𝕋𝕌𝕍𝕎𝕏𝕐ℤ","𝕒𝕓𝕔𝕕𝕖𝕗𝕘𝕙𝕚𝕛𝕜𝕝𝕞𝕟𝕠𝕡𝕢𝕣𝕤𝕥𝕦𝕧𝕨𝕩𝕪𝕫"],
+["Script","𝒜ℬ𝒞𝒟ℰℱ𝒢ℋℐ𝒥𝒦ℒℳ𝒩𝒪𝒫𝒬ℛ𝒮𝒯𝒰𝒱𝒲𝒳𝒴𝒵","𝒶𝒷𝒸𝒹ℯ𝒻ℊ𝒽𝒾𝒿𝓀𝓁𝓂𝓃ℴ𝓅𝓆𝓇𝓈𝓉𝓊𝓋𝓌𝓍𝓎𝓏"],
+["Monospace","𝙰𝙱𝙲𝙳𝙴𝙵𝙶𝙷𝙸𝙹𝙺𝙻𝙼𝙽𝙾𝙿𝚀𝚁𝚂𝚃𝚄𝚅𝚆𝚇𝚈𝚉","𝚊𝚋𝚌𝚍𝚎𝚏𝚐𝚑𝚒𝚓𝚔𝚕𝚖𝚗𝚘𝚙𝚚𝚛𝚜𝚝𝚞𝚟𝚠𝚡𝚢𝚣"]
+];
+function convert(text,upper,lower){
+const normal="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+const special=Array.from(upper+lower);
+return Array.from(text).map(c=>{
+const i=normal.indexOf(c);
+return i<0?c:special[i];
+}).join("");
+}
+function generate(){
+const text=document.getElementById("userText").value;
+const box=document.getElementById("results");
+box.innerHTML="";
+styles.forEach(s=>{
+const output=convert(text,s[1],s[2]);
+const card=document.createElement("div");
+card.className="card";
+const name=document.createElement("div");
+name.className="name";
+name.textContent=s[0];
+const result=document.createElement("div");
+result.className="result";
+result.textContent=output||"Your text will appear here";
+const btn=document.createElement("button");
+btn.textContent="COPY";
+btn.onclick=async()=>{
+if(!output)return;
+try{
+await navigator.clipboard.writeText(output);
+btn.textContent="COPIED ✓";
+setTimeout(()=>btn.textContent="COPY",1500);
+}catch(e){alert("Clipboard access failed");}
+};
+card.append(name,result,btn);
+box.appendChild(card);
+});
+}
+generate();
+</script>
+</body>
+</html>
